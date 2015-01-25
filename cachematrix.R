@@ -1,36 +1,45 @@
 ## Put comments here that give an overall description of what your
 ## functions do
 
-## Write a short comment describing this function
+## makeCacheMatrix makes a spiecial "matrix" that stores matrix and has a place to store its inverse
+## this function has some "methods":  that can return the stored matrix, return its inverse (or NULL)
+## or set the matrix (or update it) or set  the matrix inverse
 
-makeCacheMatrix <- function(x = matrix()) {
-  inv <- NULL
-  set <- function(y) {
-    x <<- y
-    inv <<- NULL
+makeCacheMatrix <- function(x = matrix()) { ## the default argument is empty matrix 
+ 
+  inv <- NULL ## create an "empty" inverse of the matrix 'x'
+  
+  set <- function(y) { ##  function that sets (updates) the matrix 'x' in the special matrix
+    x <<- y  ## set (update) the stored matrix in 'x'
+    inv <<- NULL ## delete the cached inverse
   }
-  get <- function() x
-  setinverse <- function(inverse) inv <<- inverse
-  getinverse <- function() inv
+ 
+  get <- function() x ## function that returns the matrix from the special matrix
+ 
+  setinverse <- function(inverse) inv <<- inverse ## function that sets the inverse matrix in the special matrix
+ 
+  getinverse <- function() inv ## function that returns the inverse matrix (or NULL)
+ 
   list(set = set, get = get,
        setinverse = setinverse,
-       getinverse = getinverse)
+       getinverse = getinverse) ## return the special matrix i.e. the list of "methods" and its attributes (matrix 'x and inverse matrix 'inv')
 
-}
+} ## end of the makeCachefunction
 
 
-## Write a short comment describing this function
-
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+cacheSolve <- function(x, ...) { ## 'x' is a special matrix 
   
-  inv <- x$getinverse()
-  if(!is.null(inv)) {
-    message("getting cached inverse")
-    return(inv)
-  }
-  data <- x$get()
-  inv <- solve(data, ...)
-  x$setinverse(inv)
-  inv
+  inv <- x$getinverse() ## get the stored inverse of the matrix in 'x' or NULL
+
+  if(!is.null(inv)) { ## if the inverse was cached (so it's not NULL)
+    message("getting cached inverse") ## write the massege the inverse was cached
+    return(inv) ## Return the matrix that is the inverse of 'x' (the inverse was cached)
+  } 
+  
+  ## otherwise
+  data <- x$get() ## get the stored matrix in 'x'
+  inv <- solve(data, ...) ## find its inverse
+  x$setinverse(inv) ## cache it
+  inv  ## Return the matrix that is the inverse of the stored matrix in 'x'
+
 }
